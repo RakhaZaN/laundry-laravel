@@ -1,7 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\LayananController;
+use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PesananController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,13 +36,41 @@ Route::group([
 });
 Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout')->middleware('auth');
 
-Route::get('/admin', function () {
-    return view('admin.index');
-})->name('admin.index')->middleware(['auth', 'role:admin']);
+Route::group([
+    'prefix' => 'admin',
+    'as' => 'admin.',
+    'middleware' => ['auth', 'role:admin']
+], function () {
+    Route::get('/', function () {
+        return view('menu.admin');
+    })->name('menu');
 
-Route::get('/kasir', function () {
-    return view('kasir.index');
-})->name('kasir')->middleware(['auth', 'role:kasir']);
+    Route::resource('/users', UserController::class)->name('as', 'users');
+    Route::resource('/layanan', LayananController::class)->name('as', 'layanan')->except('show');
+    Route::resource('/reviews', ReviewController::class)->name('as', 'reviews')->only(['index', 'destroy']);
+    Route::resource('/laporan', LaporanController::class)->name('as', 'laporan')->only(['index', 'store', 'destroy']);
+});
+
+Route::group([
+    'prefix' => 'kasir',
+    'as' => 'kasir.',
+    'middleware' => ['auth', 'role:kasir']
+], function () {
+    Route::get('/', [PesananController::class, 'index'])->name('menu');
+    Route::resource('/pesanan', PesananController::class)->name('as', 'pesanan')->except('index');
+    Route::resource('/laporan', LaporanController::class)->name('as', 'laporan')->only('store');
+});
+
+
+Route::group([
+    'prefix' => 'pelanggan',
+    'as' => 'pelanggan.',
+    'middleware' => ['auth', 'role:pelanggan'],
+], function () {
+    Route::get('/', [PelangganController::class, 'index'])->name('menu');
+    Route::resource('/pesanan', PesananController::class)->name('as', 'pesanan')->only(['create', 'store']);
+    Route::get('/reviews', [ReviewController::class, 'pelanggan'])->name('reviews');
+});
 
 Route::get('/about', function () {
     return view('about');

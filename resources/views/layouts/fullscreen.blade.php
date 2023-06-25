@@ -18,9 +18,12 @@
 <body>
     @include('layouts.partials.preloader')
     @include('layouts.partials.navbar')
-    <main style="min-height: 80vh;" class="d-flex align-items-center justify-content-center">
-        @yield('contents', 'Blank Page')
+    <main>
+        <div class="container py-5">
+            @yield('contents', 'Blank Page')
+        </div>
     </main>
+    @stack('add-contents')
 
     <!-- JS here -->
     @include('layouts.partials.base-js')

@@ -15,7 +15,7 @@ class Role
      */
     public function handle(Request $request, Closure $next, $role): Response
     {
-        if ($request->user()->role == $role) return $next($request);
+        if ($request->user()->peran == $role) return $next($request);
         return back();
     }
 }

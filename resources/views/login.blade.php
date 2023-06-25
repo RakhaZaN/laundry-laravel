@@ -1,7 +1,7 @@
 @extends('layouts.fullscreen')
 
 @section('contents')
-    <div class="container">
+    <div style="min-height: 80vh;" class="d-flex align-items-center justify-content-center">
         <div class="col-12 col-md-6 mx-auto">
             <h1 class="display-3 fw-bold text-primary text-center">Nusantara Laundry</h1>
             <p class="text-secondary text-center">Isi form dengan akun Anda</p>
@@ -9,6 +9,11 @@
             @if (session('success'))
                 <div class="alert alert-success" role="alert">
                     {{ session('success') }}
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="alert alert-danger" role="alert">
+                    {{ session('error') }}
                 </div>
             @endif
 
