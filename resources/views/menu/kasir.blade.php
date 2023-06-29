@@ -12,41 +12,47 @@
         <div class="card-body">
             <div class="d-flex align-items-center justify-content-between flex-wrap mb-30">
                 <h3 class="font-weight-bold">Data Pesanan</h3>
-                <a href="{{ route('kasir.pesanan.create') }}" class="genric-btn primary medium">Tambah Pesanan</a>
+                {{-- <a href="{{ route('kasir.pesanan.create') }}" class="genric-btn primary medium">Tambah Pesanan</a> --}}
             </div>
             <div class="table-responsive">
                 <table class="table table-stipped">
                     <thead>
                         <tr class="table-head">
-                            <td scope="col" width="200px" class="text-center">Gambar</td>
-                            <td scope="col">Nama Pesanan</td>
-                            <td scope="col">Deskripsi</td>
-                            <td scope="col">Kategori</td>
-                            <td scope="col">Harga</td>
+                            <td scope="col">Nama Pelanggan</td>
+                            <td scope="col">Layanan</td>
+                            <td scope="col">Jumlah</td>
+                            <td scope="col">Total</td>
+                            <td scope="col">Jadwal Pengambilan</td>
+                            <td scope="col">Jadwal Pengantaran</td>
+                            <td scope="col">Status</td>
                             <td scope="col" width="200px" class="text-center">Aksi</td>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($list_pesanan as $pesanan)
                             <tr class="table-row">
-                                <td class="text-center">
-                                    @if ($pesanan->gambar != null)
-                                        <img src="{{ asset($pesanan->gambar) }}" alt="{{ $pesanan->nama }}"
-                                            style="height: 100px; object-fit: cover; object-position: center">
-                                    @else
+                                <td>{{ $pesanan->user->nama }}</td>
+                                <td>{{ $pesanan->layanan->nama }}</td>
+                                <td>{{ $pesanan->jumlah }}</td>
+                                <td>Rp{{ $pesanan->total_biaya }}</td>
+                                <td>{{ $pesanan->jadwal_pengambilan }}</td>
+                                <td>{{ $pesanan->jadwal_pengantaran }}</td>
+                                <td>
+                                    {{ $pesanan->transaksi->status }}
+                                    @if ($pesanan->transaksi->status == 'pending')
+                                        <a href="#" class="text-warning link"
+                                            style="display: block; font-size: 0.9rem; text-decoration: underline;"
+                                            role="button" data-toggle="modal"
+                                            data-target="#buktiModal-{{ $pesanan->id }}">Bukti</a>
                                     @endif
                                 </td>
-                                <td>{{ $pesanan->nama }}</td>
-                                <td>{{ $pesanan->deskripsi }}</td>
-                                <td>{{ $pesanan->kategori }}</td>
-                                <td>Rp{{ $pesanan->harga }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('admin.pesanan.edit', $pesanan->id) }}"
-                                        class="genric-btn small warning"><i class="fas fa-edit"></i></a>
-                                    <a href="#" class="genric-btn danger small" role="button" data-toggle="modal"
-                                        data-target="#deleteConfirmModal-{{ $pesanan->id }}">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+                                    @if (!in_array($pesanan->transaksi->status, ['dibayar', 'dibatalkan']))
+                                        <a href="#" class="genric-btn danger small" role="button" data-toggle="modal"
+                                            data-target="#deleteConfirmModal-{{ $pesanan->id }}">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
@@ -75,18 +81,54 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        Apakah Anda benar ingin menghapus data pesanan {{ $pesanan->nama }}</span>?
+                        Apakah Anda benar ingin membatalkan data pesanan {{ $pesanan->nama }}</span>?
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="genric-btn btn-secondary border-0" data-dismiss="modal">Batal</button>
-                        <form action="{{ route('admin.pesanan.destroy', $pesanan->id) }}" method="post">
+                        <form action="{{ route('kasir.pesanan.cancel', $pesanan->transaksi->id) }}" method="post">
                             @csrf
-                            @method('delete')
-                            <button type="submit" class="genric-btn danger">Hapus</button>
+                            @method('put')
+                            <button type="submit" class="genric-btn danger">Batalkan Pesanan</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+    @endforeach
+
+    @foreach ($list_pesanan as $pesanan)
+        @if ($pesanan->transaksi->status == 'pending')
+            <div class="modal fade" id="buktiModal-{{ $pesanan->id }}" tabindex="-1" aria-labelledby="buktiModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="buktiModalLabel">Bukti Pembayaran -
+                                {{ ucfirst($pesanan->transaksi->metode_pembayaran) }}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="d-flex justify-content-center">
+                                @if ($pesanan->transaksi->metode_pembayaran == 'tunai')
+                                    <h6 class="h1 font-weight-bold text-primary">Dibayar Rp{{ $pesanan->total_biaya }}</h6>
+                                @else
+                                    <img src="{{ $pesanan->transaksi->bukti_path }}" alt="bukti pembayaran" class="w-100">
+                                @endif
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <form action="{{ route('kasir.pesanan.approve', $pesanan->transaksi->id) }}" method="post">
+                                @csrf
+                                @method('put')
+                                <button type="submit" class="genric-btn success"><i class="fas fa-check"></i>
+                                    Setejui</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     @endforeach
 @endpush

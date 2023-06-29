@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
                 'telepon' => '088762346342',
                 'alamat' => 'Dijalan hati',
                 'email' => 'john@gmail.com',
-                'password' => Hash::make('passowrd123'),
+                'password' => Hash::make('password123'),
                 'peran' => 'pelanggan'
             ],
             [

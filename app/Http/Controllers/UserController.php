@@ -52,6 +52,7 @@ class UserController extends Controller
             'telepon' => 'required|string',
             'alamat' => 'nullable|string',
             'email' => 'required|email',
+            'peran' => 'required|in:admin,kasir,pelanggan',
             'password' => 'nullable|string|exclude'
         ]);
         if (trim($request->password != '')) {
@@ -59,7 +60,12 @@ class UserController extends Controller
         }
 
         if ($user->update($validate)) {
-            return redirect(route('admin.users.index'))->with('success', 'Berhasil mengubah data user');
+            if ($user->peran == 'admin') {
+                return redirect(route('admin.users.index'))->with('success', 'Berhasil mengubah data user');
+            } else if ($user->peran == 'pelanggan') {
+                $request->session()->regenerate();
+                return redirect(route('pelanggan.profil'))->with('success', 'Berhasil menyimpan perubahan');
+            }
         }
         return back()->with('error', 'Gagal mengubah data user. Terjadi kesalahan, coba lagi beberapa saat')->withInput($request->except('password'));
     }

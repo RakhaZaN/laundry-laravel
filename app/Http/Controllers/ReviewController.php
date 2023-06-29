@@ -21,9 +21,9 @@ class ReviewController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): View
+    public function create()
     {
-        return view('');
+        //
     }
 
     /**
@@ -54,9 +54,10 @@ class ReviewController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(review $review): View
+    public function edit(): View
     {
-        return view('layanan.index', compact('review'));
+        $review = Review::where('user_id', auth()->user()->id)->first();
+        return view('review.form', compact('review'));
     }
 
     /**
@@ -85,5 +86,20 @@ class ReviewController extends Controller
         }
 
         return back();
+    }
+
+    public function createOrUpdate(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'review' => 'required|string',
+        ]);
+
+        $upsert = Review::updateOrInsert(['user_id' => auth()->user()->id], $validated);
+
+        if ($upsert) {
+            return redirect(route('pelanggan.review'))->with('success', 'Berhasil menyimpan review');
+        }
+
+        return back()->with('error', 'Gagal menyimpan review. Terjadi kesalahan, coba lagi dalam beberapa menit');
     }
 }

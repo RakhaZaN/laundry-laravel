@@ -14,10 +14,9 @@ return new class extends Migration
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pesanan_id')->constrained('pesanan');
-            $table->enum('tipe_pembayaran', ['tunai', 'non-tunai']);
-            $table->integer('bayar');
+            $table->enum('metode_pembayaran', ['tunai', 'non-tunai']);
             $table->string('bukti_path', 255)->nullable();
-            $table->boolean('status')->default(false);
+            $table->enum('status', ['belum bayar', 'pending', 'dibayar', 'dibatalkan'])->default('belum bayar');
             $table->timestamps();
         });
     }

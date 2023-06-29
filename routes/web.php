@@ -57,7 +57,9 @@ Route::group([
     'middleware' => ['auth', 'role:kasir']
 ], function () {
     Route::get('/', [PesananController::class, 'index'])->name('menu');
-    Route::resource('/pesanan', PesananController::class)->name('as', 'pesanan')->except('index');
+    Route::resource('/pesanan', PesananController::class)->name('as', 'pesanan')->only(['index', 'create']);
+    Route::put('/pesanan/{transaksi}/approve', [PesananController::class, 'approveTransaksi'])->name('pesanan.approve');
+    Route::put('/pesanan/{transaksi}/cancel', [PesananController::class, 'cancelPesanan'])->name('pesanan.cancel');
     Route::resource('/laporan', LaporanController::class)->name('as', 'laporan')->only('store');
 });
 
@@ -68,8 +70,14 @@ Route::group([
     'middleware' => ['auth', 'role:pelanggan'],
 ], function () {
     Route::get('/', [PelangganController::class, 'index'])->name('menu');
-    Route::resource('/pesanan', PesananController::class)->name('as', 'pesanan')->only(['create', 'store']);
-    Route::get('/reviews', [ReviewController::class, 'pelanggan'])->name('reviews');
+    Route::get('/profil', [PelangganController::class, 'profil'])->name('profil');
+    Route::put('/profil/{user}', [UserController::class, 'update'])->name('profil.update');
+    Route::resource('/pesanan', PesananController::class)->name('as', 'pesanan')->only(['create', 'store', 'edit', 'update']);
+    Route::get('/pesanan/my', [PelangganController::class, 'myPesanan'])->name('my');
+    Route::get('/pesanan/{pesanan}/pembayaran', [PesananController::class, 'payment'])->name('pembayaran');
+    Route::post('/upload-bukti/{transaksi}', [PesananController::class, 'uploadProof'])->name('upload');
+    Route::get('/review', [ReviewController::class, 'edit'])->name('review');
+    Route::post('/review/save', [ReviewController::class, 'createOrUpdate'])->name('review.save');
 });
 
 Route::get('/about', function () {

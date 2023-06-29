@@ -15,7 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('layanan_id')->constrained('layanan');
-            $table->integer('total');
+            $table->dateTime('jadwal_pengambilan', 0);
+            $table->dateTime('jadwal_pengantaran', 0);
+            $table->string('alamat', 255);
+            $table->decimal('jumlah');
+            $table->integer('harga');
+            $table->integer('total_biaya');
             $table->timestamps();
         });
     }

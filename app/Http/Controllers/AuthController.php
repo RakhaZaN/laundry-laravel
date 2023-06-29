@@ -52,7 +52,7 @@ class AuthController extends Controller
             $role = Auth::user()->peran;
             if ($role == 'admin') return redirect()->intended(route('admin.menu'));
             else if ($role == 'kasir') return redirect()->intended(route('kasir.menu'));
-            else return redirect()->intended(route('pelanggan.menu'))->with('success', 'Selamat Datang, ' . Auth::user()->name);
+            else if ($role == 'pelanggan') return redirect()->intended(route('pelanggan.menu'))->with('success', 'Selamat Datang, ' . Auth::user()->name);
         }
         return back()->with('error', 'Ada kesalahan sistem, mohon coba beberapa saat lagi!')->withInput($request->except('password'));
     }
