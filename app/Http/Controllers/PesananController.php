@@ -62,7 +62,7 @@ class PesananController extends Controller
             if (auth()->user()->peran == 'kasir') {
                 return redirect(route('kasir.pesanan.index'))->with('success', 'Berhasil membuat pesanan');
             } else if (auth()->user()->peran == 'pelanggan') {
-                if ($request->mrtode_pembayaran == 'tunai') {
+                if ($request->metode_pembayaran == 'tunai') {
                     return redirect(route('pelanggan.menu'))->with('success', 'Berhasil membuat pesanan');
                 } else {
                     return redirect(route('pelanggan.pembayaran', ['pesanan' => $create->id]))->with('success', 'Berhasil membuat pesanan. Silahkan melakukan pembayaran');
