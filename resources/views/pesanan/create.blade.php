@@ -8,7 +8,7 @@
     @endif
 
     <div class="card">
-        <form action="{{ route('pelanggan.pesanan.store') }}" method="POST">
+        <form action="{{ route(auth()->user()->peran . '.pesanan.store') }}" method="POST">
             @csrf
             <input type="hidden" name="layanan_id" value="{{ $layanan->id }}">
             <div class="card-body">

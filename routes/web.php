@@ -49,6 +49,7 @@ Route::group([
     Route::resource('/layanan', LayananController::class)->name('as', 'layanan')->except('show');
     Route::resource('/reviews', ReviewController::class)->name('as', 'reviews')->only(['index', 'destroy']);
     Route::resource('/laporan', LaporanController::class)->name('as', 'laporan')->only(['index', 'store', 'destroy']);
+    // Route::get('/laporan/pesanan', [LaporanController::class, 'pesanan'])->name('laporan.pesanan');
 });
 
 Route::group([
@@ -57,7 +58,7 @@ Route::group([
     'middleware' => ['auth', 'role:kasir']
 ], function () {
     Route::get('/', [PesananController::class, 'index'])->name('menu');
-    Route::resource('/pesanan', PesananController::class)->name('as', 'pesanan')->only(['index', 'create']);
+    Route::resource('/pesanan', PesananController::class)->name('as', 'pesanan')->only(['index', 'create', 'store']);
     Route::put('/pesanan/{transaksi}/approve', [PesananController::class, 'approveTransaksi'])->name('pesanan.approve');
     Route::put('/pesanan/{transaksi}/cancel', [PesananController::class, 'cancelPesanan'])->name('pesanan.cancel');
     Route::resource('/laporan', LaporanController::class)->name('as', 'laporan')->only('store');

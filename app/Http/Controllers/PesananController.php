@@ -25,8 +25,13 @@ class PesananController extends Controller
      */
     public function create(Request $request): View
     {
-        $layanan = Layanan::find($request->layanan);
-        return view('pesanan.create', compact('layanan'));
+        if ($request->has('layanan')) {
+            $layanan = Layanan::find($request->layanan);
+            return view('pesanan.create', compact('layanan'));
+        }
+
+        $layanan = Layanan::all();
+        return view('pesanan.offline', ['list_layanan' => $layanan]);
     }
 
     /**
@@ -39,7 +44,7 @@ class PesananController extends Controller
             'jadwal_pengambilan' => 'required',
             'jadwal_pengantaran' => 'required',
             'alamat' => 'required|string',
-            'jumlah' => 'required|decimal:1',
+            'jumlah' => 'required',
             'harga' => 'required|integer',
             'total_biaya' => 'required|integer',
         ]);
@@ -94,7 +99,7 @@ class PesananController extends Controller
             'jadwal_pengambilan' => 'required',
             'jadwal_pengantaran' => 'required',
             'alamat' => 'required|string',
-            'jumlah' => 'required|decimal:2',
+            'jumlah' => 'required',
             'harga' => 'required|integer',
             'total_biaya' => 'required|integer',
         ]);

@@ -17,17 +17,26 @@
                 <table class="table table-stipped">
                     <thead>
                         <tr class="table-head">
-                            <td scope="col">File</td>
+                            <td scope="col">Dibuat Pada</td>
                             <td scope="col">Kategori</td>
+                            <td scope="col">File</td>
                             <td scope="col">Dibuat oleh</td>
                             <td scope="col" width="200px" class="text-center">Aksi</td>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($list_laporan as $laporan)
+                            @php
+                                $filename = explode('/', $laporan->file_path)[2];
+                            @endphp
                             <tr class="table-row">
-                                <td>{{ $laporan->nama }}</td>
+                                <td>{{ $laporan->created_at }}</td>
                                 <td>{{ $laporan->kategori }}</td>
+                                <td>
+                                    <a href="{{ asset('storage/' . $laporan->file_path) }}" target="_blank"
+                                        class="text-primary">{{ $filename }}</a>
+                                </td>
+                                <td>{{ $laporan->user->nama }}</td>
                                 <td class="text-center">
                                     <a href="#" class="genric-btn danger small" role="button" data-toggle="modal"
                                         data-target="#deleteConfirmModal-{{ $laporan->id }}">

@@ -1,7 +1,14 @@
 @extends('layouts.fullscreen')
 
 @section('contents')
-    <h1 class="display-4 font-weight-bold mb-20">Kelola Pesanan</h1>
+    <div class="d-flex align-items-center mb-30">
+        <h1 class="display-4 font-weight-bold mr-3">Kelola Pesanan</h1>
+        @if (count($list_pesanan) > 0)
+            <a href="#" role="button" class="genric-btn success small" data-toggle="modal" data-target="#generateModal">
+                <i class="fas fa-file-pdf"></i> Buat Laporan
+            </a>
+        @endif
+    </div>
 
     @if (session('success'))
         <div class="alert alert-success" role="alert">
@@ -68,7 +75,60 @@
 @endsection
 
 @push('add-contents')
-    <!-- Modal -->
+    <!-- Modal Generate Laporan -->
+    <div class="modal fade" id="generateModal" tabindex="-1" aria-labelledby="generateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <form action="{{ route('kasir.laporan.store') }}" method="post">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="generateModalLabel">Laporan Pesanan</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Bulan</label>
+                            <div class="form-select">
+                                @php
+                                    $bulan_sekarang = now()->month;
+                                @endphp
+                                <select name="bulan" id="bulan" class="d-none">
+                                    @for ($i = 1; $i <= $bulan_sekarang; $i++)
+                                        @php
+                                            $bulan = date('F', mktime(0, 0, 0, $i, 1));
+                                        @endphp
+                                        <option value="{{ $i }}">{{ $bulan }}</option>
+                                    @endfor
+                                </select>
+                                <div class="nice-select float-none">
+                                    <span class="current">-- Pilih Bulan --</span>
+                                    <ul class="list">
+                                        @for ($i = 1; $i <= $bulan_sekarang; $i++)
+                                            @php
+                                                $bulan = date('F', mktime(0, 0, 0, $i, 1));
+                                            @endphp
+                                            <li data-value="{{ $i }}"
+                                                class="option {{ $i == $bulan_sekarang ? 'selected focus' : '' }}">
+                                                {{ $bulan }}</li>
+                                        @endfor
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="kategori" id="kategori" value="pesanan">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="genric-btn btn-secondary border-0" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="genric-btn primary">Buat Laporan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Delete -->
     @foreach ($list_pesanan as $pesanan)
         <div class="modal fade" id="deleteConfirmModal-{{ $pesanan->id }}" tabindex="-1"
             aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
@@ -84,7 +144,8 @@
                         Apakah Anda benar ingin membatalkan data pesanan {{ $pesanan->nama }}</span>?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="genric-btn btn-secondary border-0" data-dismiss="modal">Batal</button>
+                        <button type="button" class="genric-btn btn-secondary border-0"
+                            data-dismiss="modal">Batal</button>
                         <form action="{{ route('kasir.pesanan.cancel', $pesanan->transaksi->id) }}" method="post">
                             @csrf
                             @method('put')
@@ -96,10 +157,11 @@
         </div>
     @endforeach
 
+    <!-- Modal Approvement -->
     @foreach ($list_pesanan as $pesanan)
         @if ($pesanan->transaksi->status == 'pending')
-            <div class="modal fade" id="buktiModal-{{ $pesanan->id }}" tabindex="-1" aria-labelledby="buktiModalLabel"
-                aria-hidden="true">
+            <div class="modal fade" id="buktiModal-{{ $pesanan->id }}" tabindex="-1"
+                aria-labelledby="buktiModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-sm">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -112,9 +174,11 @@
                         <div class="modal-body">
                             <div class="d-flex justify-content-center">
                                 @if ($pesanan->transaksi->metode_pembayaran == 'tunai')
-                                    <h6 class="h1 font-weight-bold text-primary">Dibayar Rp{{ $pesanan->total_biaya }}</h6>
+                                    <h6 class="h1 font-weight-bold text-primary">Dibayar Rp{{ $pesanan->total_biaya }}
+                                    </h6>
                                 @else
-                                    <img src="{{ $pesanan->transaksi->bukti_path }}" alt="bukti pembayaran" class="w-100">
+                                    <img src="{{ $pesanan->transaksi->bukti_path }}" alt="bukti pembayaran"
+                                        class="w-100">
                                 @endif
                             </div>
                         </div>

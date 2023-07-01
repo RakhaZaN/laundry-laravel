@@ -1,7 +1,14 @@
 @extends('layouts.fullscreen')
 
 @section('contents')
-    <h1 class="display-4 font-weight-bold mb-20">Kelola User</h1>
+    <div class="d-flex align-items-center mb-30">
+        <h1 class="display-4 font-weight-bold mr-3">Kelola User</h1>
+        @if (count($users) > 0)
+            <a href="#" role="button" class="genric-btn success small" data-toggle="modal" data-target="#generateModal">
+                <i class="fas fa-file-pdf"></i> Buat Laporan
+            </a>
+        @endif
+    </div>
 
     @if (session('success'))
         <div class="alert alert-success" role="alert">
@@ -57,7 +64,60 @@
 @endsection
 
 @push('add-contents')
-    <!-- Modal -->
+    <!-- Modal Generate Laporan -->
+    <div class="modal fade" id="generateModal" tabindex="-1" aria-labelledby="generateModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <form action="{{ route('admin.laporan.store') }}" method="post">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="generateModalLabel">Laporan User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="">Bulan</label>
+                            <div class="form-select">
+                                @php
+                                    $bulan_sekarang = now()->month;
+                                @endphp
+                                <select name="bulan" id="bulan" class="d-none">
+                                    @for ($i = 1; $i <= $bulan_sekarang; $i++)
+                                        @php
+                                            $bulan = date('F', mktime(0, 0, 0, $i, 1));
+                                        @endphp
+                                        <option value="{{ $i }}">{{ $bulan }}</option>
+                                    @endfor
+                                </select>
+                                <div class="nice-select float-none">
+                                    <span class="current">-- Pilih Bulan --</span>
+                                    <ul class="list">
+                                        @for ($i = 1; $i <= $bulan_sekarang; $i++)
+                                            @php
+                                                $bulan = date('F', mktime(0, 0, 0, $i, 1));
+                                            @endphp
+                                            <li data-value="{{ $i }}"
+                                                class="option {{ $i == $bulan_sekarang ? 'selected focus' : '' }}">
+                                                {{ $bulan }}</li>
+                                        @endfor
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="kategori" id="kategori" value="user">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="genric-btn btn-secondary border-0" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="genric-btn primary">Buat Laporan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Delete -->
     @foreach ($users as $user)
         <div class="modal fade" id="deleteConfirmModal-{{ $user->id }}" tabindex="-1"
             aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
@@ -84,4 +144,6 @@
             </div>
         </div>
     @endforeach
+
+
 @endpush

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('laporan', function (Blueprint $table) {
             $table->id();
             $table->string('file_path', 255);
-            $table->enum('kategori', ['user', 'layanan', 'pemesanan', 'transaksi']);
+            $table->enum('kategori', ['user', 'layanan', 'pesanan']);
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });

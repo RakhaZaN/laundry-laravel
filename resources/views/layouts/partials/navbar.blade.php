@@ -25,7 +25,7 @@
                                     <li class="{{ Request::is('blog*') ? 'active' : '' }}">
                                         <a href="{{ url('/blog') }}">Blog</a>
                                         <ul class="submenu">
-                                            <li><a href="{{ url('/blog') }}l">Blog</a></li>
+                                            <li><a href="{{ url('/blog') }}">Blog</a></li>
                                             <li><a href="{{ url('/blog/detail') }}">Blog Details</a></li>
                                         </ul>
                                     </li>
@@ -61,12 +61,12 @@
                                         @break
 
                                         @case('kasir')
-                                            <li class="{{ Request::is('kasir') ? 'active' : '' }}">
+                                            <li class="{{ Request::is('kasir/pesanan') ? 'active' : '' }}">
                                                 <a href="{{ route('kasir.menu') }}">Dashboard</a>
                                             </li>
-                                            {{-- <li class="{{ Request::is('kasir/pesanan*') ? 'active' : '' }}">
-                                                <a href="{{ route('kasir.pesanan.index') }}">Pesanan</a>
-                                            </li> --}}
+                                            <li class="{{ Request::is('kasir/pesanan/create') ? 'active' : '' }}">
+                                                <a href="{{ route('kasir.pesanan.create') }}">Pesanan</a>
+                                            </li>
                                         @break
 
                                         @default
@@ -76,7 +76,7 @@
                                             <li class="{{ Request::is('pelanggan/profil') ? 'active' : '' }}">
                                                 <a href="{{ route('pelanggan.profil') }}">Profil</a>
                                             </li>
-                                            <li class="{{ Request::is('pelanggan/pesanan*') ? 'active' : '' }}">
+                                            <li class="{{ Request::is('pelanggan/pesanan/my') ? 'active' : '' }}">
                                                 <a href="{{ route('pelanggan.my') }}">Pesanan Saya</a>
                                             </li>
                                             <li class="{{ Request::is('pelanggan/review') ? 'active' : '' }}">
