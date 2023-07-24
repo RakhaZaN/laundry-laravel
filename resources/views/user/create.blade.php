@@ -3,6 +3,14 @@
 @section('contents')
     <h1 class="display-4 font-weight-bold mb-20">Tambah User</h1>
 
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ $errors->first() }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
     <div class="card">
         <form action="{{ route('admin.users.store') }}" method="post">
             @csrf

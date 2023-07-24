@@ -38,6 +38,11 @@ class LayananController extends Controller
             'deskripsi' => 'nullable|string',
             'kategori' => 'required|in:satuan,kiloan',
             'gambar' => 'nullable|image|max:1999|exclude'
+        ], [
+            'required' => ':attribute tidak boleh kosong!',
+            'nama.unique' => 'nama layanan yang Anda masukkan sudah tersedia!',
+            'in' => ':attribute harus bernilai :values',
+            'gambar.max' => 'Size gambar maksimal adalah 2mb'
         ]);
 
         if ($request->hasFile('gambar')) {
@@ -79,7 +84,11 @@ class LayananController extends Controller
             'harga' => 'required|integer',
             'deskripsi' => 'nullable|string',
             'kategori' => 'required|in:satuan,kiloan',
-            'gambar' => 'nullable|image|exclude'
+            'gambar' => 'nullable|image|max:1999|exclude'
+        ], [
+            'required' => ':attribute tidak boleh kosong!',
+            'in' => ':attribute harus bernilai :values',
+            'gambar.max' => 'Size gambar maksimal adalah 2mb'
         ]);
 
         if ($request->hasFile('gambar')) {

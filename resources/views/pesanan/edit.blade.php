@@ -18,6 +18,12 @@
                     <div class="col-12 col-md-6">
                         <div class="d-flex flex-column" style="gap: 1rem">
                             <div class="form-group mb-10">
+                                <label for="nama_pelanggan">Nama Pelanggan</label>
+                                <input type="text" name="nama_pelanggan" id="nama_pelanggan" class="single-input"
+                                    value="{{ old('nama_pelanggan') ?? $pesanan->nama_pelanggan }}"
+                                    {{ auth()->user()->peran == 'pelanggan' ? 'readonly' : '' }}>
+                            </div>
+                            <div class="form-group mb-10">
                                 <label for="jadwal_pengambilan">Jadwal Pengambilan</label>
                                 <input type="datetime-local" name="jadwal_pengambilan" id="jadwal_pengambilan"
                                     class="single-input"

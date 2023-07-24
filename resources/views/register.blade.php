@@ -6,7 +6,7 @@
             <h1 class="display-3 fw-bold text-primary text-center">Nusantara Laundry</h1>
             <p class="text-secondary text-center">Isi form dengan data Anda</p>
 
-            <form action="{{ route('auth.register.store') }}" method="POST">
+            <form action="{{ route('auth.register.store') }}" method="POST" class="needs-validation" novalidate>
                 @csrf
 
                 <div class="card">
@@ -14,6 +14,14 @@
                         @if (session('error'))
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 {{ session('error') }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        @endif
+                        @if ($errors->any())
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ $errors->first() }}
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>

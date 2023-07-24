@@ -5,6 +5,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PesananController;
+use App\Http\Controllers\PublicController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -20,9 +21,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', [PublicController::class, 'index']);
 
 Route::group([
     'prefix' => 'auth',
@@ -76,27 +75,11 @@ Route::group([
     Route::resource('/pesanan', PesananController::class)->name('as', 'pesanan')->only(['create', 'store', 'edit', 'update']);
     Route::get('/pesanan/my', [PelangganController::class, 'myPesanan'])->name('my');
     Route::get('/pesanan/{pesanan}/pembayaran', [PesananController::class, 'payment'])->name('pembayaran');
+    Route::put('/pesanan/{transaksi}/cancel', [PesananController::class, 'cancelPesanan'])->name('pesanan.cancel');
     Route::post('/upload-bukti/{transaksi}', [PesananController::class, 'uploadProof'])->name('upload');
     Route::get('/review', [ReviewController::class, 'edit'])->name('review');
     Route::post('/review/save', [ReviewController::class, 'createOrUpdate'])->name('review.save');
 });
 
-Route::get('/about', function () {
-    return view('about');
-});
-
-Route::get('/services', function () {
-    return view('services');
-});
-
-Route::get('/blog', function () {
-    return view('blog');
-});
-
-Route::get('/blog/detail', function () {
-    return view('blog_detail');
-});
-
-Route::get('/contact', function () {
-    return view('contact');
-});
+Route::get('/about', [PublicController::class, 'about']);
+Route::get('/services', [PublicController::class, 'services']);

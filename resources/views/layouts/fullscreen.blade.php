@@ -25,6 +25,8 @@
     </main>
     @stack('add-contents')
 
+    @include('layouts.partials.footer')
+
     <!-- JS here -->
     @include('layouts.partials.base-js')
     @stack('add-js')

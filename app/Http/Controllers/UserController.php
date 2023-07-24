@@ -27,8 +27,14 @@ class UserController extends Controller
             'nama' => 'required|string',
             'telepon' => 'required|string',
             'alamat' => 'nullable|string',
-            'email' => 'required|email',
-            'password' => 'required|string'
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string',
+            'peran' => 'required|in:admin,kasir,pelanggan',
+        ], [
+            'required' => ':attribute tidak boleh kosong!',
+            'email.email' => 'email yang Anda masukkan tidak valid!',
+            'email.unique' => 'email yang anda masukkan sudah terdaftar!',
+            'in' => ':attribute harus memiliki nilai :values',
         ]);
 
         $validate['password'] = Hash::make($request->password);
@@ -45,7 +51,7 @@ class UserController extends Controller
         return view('user.edit', compact('user'));
     }
 
-    public function update(Request $request, User $user): RedirectResponse
+    public function update(Request $request, User $user)
     {
         $validate = $request->validate([
             'nama' => 'required|string',
@@ -54,6 +60,10 @@ class UserController extends Controller
             'email' => 'required|email',
             'peran' => 'required|in:admin,kasir,pelanggan',
             'password' => 'nullable|string|exclude'
+        ], [
+            'required' => ':attribute tidak boleh kosong!',
+            'email.email' => 'email yang Anda masukkan tidak valid!',
+            'in' => ':attribute harus memiliki nilai :values',
         ]);
         if (trim($request->password != '')) {
             $validate['password'] = Hash::check($request->password, $user->passowrd) ? $user->password : Hash::make($request->password);

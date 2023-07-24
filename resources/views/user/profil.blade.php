@@ -57,9 +57,23 @@
             </div>
             <div class="card-footer">
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="genric-btn primary">Simpan Perubahan</button>
+                    <button type="submit" class="genric-btn primary" id="submit">Simpan Perubahan</button>
                 </div>
             </div>
         </form>
     </div>
 @endsection
+
+@push('add-js')
+    <script>
+        $(document).ready(() => {
+            const originalForm = $('form').serialize()
+            $('form').submit(() => {
+                const currentForm = $('form').serialize()
+                if (originalForm === currentForm) {
+                    return false
+                }
+            })
+        })
+    </script>
+@endpush

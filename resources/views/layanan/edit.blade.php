@@ -3,6 +3,15 @@
 @section('contents')
     <h1 class="display-4 font-weight-bold mb-20">Ubah Layanan</h1>
 
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ $errors->first() }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
     <div class="card">
         <form action="{{ route('admin.layanan.update', $layanan->id) }}" method="post" enctype="multipart/form-data">
             @csrf

@@ -22,8 +22,12 @@ class AuthController extends Controller
             'nama' => 'required|string',
             'telepon' => 'required|string',
             'alamat' => 'nullable|string',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required',
+        ], [
+            'required' => ':attribute tidak boleh kosong!',
+            'email' => 'Anda memasukkan email yang tidak valid!',
+            'unique' => 'Email yang Anda masukkan sudah terdaftar!',
         ]);
 
         $validate['password'] = Hash::make($request->password);
@@ -45,6 +49,9 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email' => "required|email",
             'password' => "required"
+        ], [
+            'required' => ':attribute tidak boleh kosong!',
+            'email' => 'Email yang Anda masukkan tidak valid!'
         ]);
 
         if (Auth::attempt($credentials)) {
@@ -54,7 +61,7 @@ class AuthController extends Controller
             else if ($role == 'kasir') return redirect()->intended(route('kasir.menu'));
             else if ($role == 'pelanggan') return redirect()->intended(route('pelanggan.menu'))->with('success', 'Selamat Datang, ' . Auth::user()->name);
         }
-        return back()->with('error', 'Ada kesalahan sistem, mohon coba beberapa saat lagi!')->withInput($request->except('password'));
+        return back()->with('error', 'Email atau Password Salah!')->withInput($request->except('password'));
     }
 
     public function logout(Request $request)

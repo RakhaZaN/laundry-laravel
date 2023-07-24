@@ -1,5 +1,31 @@
 @extends('layouts.app')
 
+@push('add-css')
+    <style>
+        .testimonials-area .testmonial-thumb span {
+            transform: scale(0.4);
+            transition: .6s;
+            opacity: 0.4
+        }
+
+        .testimonials-area .testmonial-thumb.slick-current.slick-center span {
+            transform: scale(0.6);
+            opacity: 1;
+            color: #6884fc;
+        }
+
+        .slick-slide span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #6884fc;
+            border-radius: 50%;
+            aspect-ratio: 1/1;
+            vertical-align: middle !important;
+        }
+    </style>
+@endpush
+
 @section('contents')
     <!--? Hero Start -->
     <div class="slider-area2 section-bg2 hero-overly" data-background="assets/img/hero/hero2.png">
@@ -133,71 +159,34 @@
         <div class="container">
             <div class="border-bottom section-padding40">
                 <div class="row">
-                    <div class="col-xl-12">
+                    <div class="col-xl-12 ">
                         <!-- testmonial-image -->
                         <div class="testmonial-nav text-center">
-                            <div class="testmonial-thumb">
-                                <img src="assets/img/gallery/testimonila1.png" alt="" />
-                            </div>
-                            <div class="testmonial-thumb">
-                                <img src="assets/img/gallery/testimonila2.png" alt="" />
-                            </div>
-                            <div class="testmonial-thumb">
-                                <img src="assets/img/gallery/testimonila3.png" alt="" />
-                            </div>
-                            <div class="testmonial-thumb">
-                                <img src="assets/img/gallery/testimonila2.png" alt="" />
-                            </div>
+                            @foreach ($reviews as $key => $review)
+                                <div class="testmonial-thumb">
+                                    <span class="genric-btn primary">{{ $key + 1 }}</span>
+                                </div>
+                            @endforeach
                         </div>
                         <div class="testmonial-item-active text-center">
-                            <!-- testimonial-single-items -->
-                            <div class="testmonial-item">
-                                <p class="pera">
-                                    The automated process starts as soon as your clothes go
-                                    into the<br />
-                                    machine. The outcome is gleaming clothes!
-                                </p>
-                                <div class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
+                            @forelse ($reviews as $review)
+                                <!-- testimonial-single-items -->
+                                <div class="testmonial-item ">
+                                    <p class="pera px-5">{{ $review->review }}</p>
+                                    {{-- <div class="rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div> --}}
+                                    <p> - {{ $review->user->nama }}</p>
                                 </div>
-                                <p>- Rupaya</p>
-                            </div>
-                            <!-- testimonial-single-items -->
-                            <div class="testmonial-item">
-                                <p class="pera">
-                                    The automated process starts as soon as your clothes go
-                                    into the<br />
-                                    machine. The outcome is gleaming clothes!
-                                </p>
-                                <div class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
+                            @empty
+                                <div class="testimonial-item ">
+                                    <p class="pera">Belum ada review tersedia</p>
                                 </div>
-                                <p>- Rupaya</p>
-                            </div>
-                            <!-- testimonial-single-items -->
-                            <div class="testmonial-item">
-                                <p class="pera">
-                                    The automated process starts as soon as your clothes go
-                                    into the<br />
-                                    machine. The outcome is gleaming clothes!
-                                </p>
-                                <div class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <p>- Rupaya</p>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -205,65 +194,4 @@
         </div>
     </section>
     <!-- Testimonials_end -->
-    <!--? Company achievement Start -->
-    <section class="services-area section-padding40 fix">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-xl-7 col-lg-8">
-                    <div class="section-tittle text-center mb-55">
-                        <span class="element">Fun Fact</span>
-                        <h2>Company achievement</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="single-cat text-center">
-                        <div class="cat-cap">
-                            <span>4000</span>
-                            <p>
-                                The automated process starts as soon as your clothes go into
-                                the machine.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="single-cat text-center">
-                        <div class="cat-cap">
-                            <span>300+</span>
-                            <p>
-                                The automated process starts as soon as your clothes go into
-                                the machine.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="single-cat text-center">
-                        <div class="cat-cap">
-                            <span>95%</span>
-                            <p>
-                                The automated process starts as soon as your clothes go into
-                                the machine.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="bottom-bt">
-                            <img src="assets/img/gallery/company-bg.png" alt="" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Company achievement End -->
-    <!--?  Map Area start  -->
-    <div class="Map-area">
-        <img src="assets/img/gallery/Map.png" alt="" class="w-100" />
-    </div>
-    <!-- Map Area End -->
 @endsection

@@ -41,6 +41,7 @@ class PesananController extends Controller
     {
         $validated = $request->validate([
             'layanan_id' => 'required|exists:layanan,id',
+            'nama_pelanggan' => 'required|string',
             'jadwal_pengambilan' => 'required',
             'jadwal_pengantaran' => 'required',
             'alamat' => 'required|string',
@@ -96,6 +97,7 @@ class PesananController extends Controller
     {
         $validated = $request->validate([
             'layanan_id' => 'required|exists:layanan,id',
+            'nama_pelanggan' => 'required|string',
             'jadwal_pengambilan' => 'required',
             'jadwal_pengantaran' => 'required',
             'alamat' => 'required|string',

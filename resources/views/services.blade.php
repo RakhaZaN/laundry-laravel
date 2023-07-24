@@ -1,5 +1,31 @@
 @extends('layouts.app')
 
+@push('add-css')
+    <style>
+        .testimonials-area .testmonial-thumb span {
+            transform: scale(0.4);
+            transition: .6s;
+            opacity: 0.4
+        }
+
+        .testimonials-area .testmonial-thumb.slick-current.slick-center span {
+            transform: scale(0.6);
+            opacity: 1;
+            color: #6884fc;
+        }
+
+        .slick-slide span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #6884fc;
+            border-radius: 50%;
+            aspect-ratio: 1/1;
+            vertical-align: middle !important;
+        }
+    </style>
+@endpush
+
 @section('contents')
     <!--? Hero Start -->
     <div class="slider-area2 section-bg2 hero-overly" data-background="assets/img/hero/hero2.png">
@@ -79,47 +105,111 @@
                     </div>
                 </div>
             </div>
+            <div class="row no-gutters mb-55">
+                <div class="col-12 text-center mb-10">
+                    <h3>Laundry Kiloan</h3>
+                </div>
+                @forelse ($list_layanan as $key => $layanan)
+                    @if ($layanan->kategori == 'kiloan')
+                        @if (($key + 1) % 2 != 0)
+                            <div class="col-lg-6 col-md-6">
+                                <div class="single-offers">
+                                    <img src="{{ asset('assets/img/gallery/offers1.png') }}" alt="" class=" w-100">
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="single-offers">
+                                    <img src="{{ asset('assets/img/gallery/offers2.png') }}" alt="" class=" w-100">
+                                    <div class="offers-caption text-center">
+                                        <div class="cat-icon">
+                                            <img src="{{ asset('assets/img/icon/offers-icon1.png') }}" alt="">
+                                        </div>
+                                        <div class="cat-cap">
+                                            <h5><a href="#" role="button">{{ $layanan->nama }}</a></h5>
+                                            <p>{{ $layanan->deskripsi }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="col-lg-6 col-md-6">
+                                <div class="single-offers">
+                                    <img src="{{ asset('assets/img/gallery/offers2.png') }}" alt="" class=" w-100">
+                                    <div class="offers-caption text-center">
+                                        <div class="cat-icon">
+                                            <img src="{{ asset('assets/img/icon/offers-icon1.png') }}" alt="">
+                                        </div>
+                                        <div class="cat-cap">
+                                            <h5><a href="#" role="button">{{ $layanan->nama }}</a></h5>
+                                            <p>{{ $layanan->deskripsi }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="single-offers">
+                                    <img src="{{ asset('assets/img/gallery/offers4.png') }}" alt="" class=" w-100">
+                                </div>
+                            </div>
+                        @endif
+                    @endif
+                @empty
+                    <p class="text-center">Belum ada layanan tersedia</p>
+                @endforelse
+            </div>
             <div class="row no-gutters">
-                <div class="col-lg-6 col-md-6">
-                    <div class="single-offers">
-                        <img src="assets/img/gallery/offers1.png" alt="" class=" w-100">
-                    </div>
+                <div class="col-12 text-center mb-10">
+                    <h3>Laundry Satuan</h3>
                 </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="single-offers">
-                        <img src="assets/img/gallery/offers2.png" alt="" class=" w-100">
-                        <div class="offers-caption text-center">
-                            <div class="cat-icon">
-                                <img src="assets/img/icon/offers-icon1.png" alt="">
+                @forelse ($list_layanan as $key => $layanan)
+                    @if ($layanan->kategori == 'satuan')
+                        @if (($key + 1) % 2 != 0)
+                            <div class="col-lg-6 col-md-6">
+                                <div class="single-offers">
+                                    <img src="{{ asset('assets/img/gallery/offers1.png') }}" alt="" class=" w-100">
+                                </div>
                             </div>
-                            <div class="cat-cap">
-                                <h5><a href="services.html">Cloth laundry</a></h5>
-                                <p>The automated process starts as soon as your clothes go into the machine. The outcome is
-                                    gleaming clothes!!</p>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="single-offers">
+                                    <img src="{{ asset('assets/img/gallery/offers2.png') }}" alt="" class=" w-100">
+                                    <div class="offers-caption text-center" style="padding: 0 120px;">
+                                        <div class="cat-icon">
+                                            <img src="{{ asset('assets/img/icon/offers-icon1.png') }}" alt="">
+                                        </div>
+                                        <div class="cat-cap">
+                                            <h5><a href="#" role="button">{{ $layanan->nama }}</a></h5>
+                                            <p>{{ $layanan->deskripsi }}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="single-offers">
-                        <img src="assets/img/gallery/offers2.png" alt="" class=" w-100">
-                        <div class="offers-caption text-center">
-                            <div class="cat-icon">
-                                <img src="assets/img/icon/offers-icon1.png" alt="">
+                        @else
+                            <div class="col-lg-6 col-md-6">
+                                <div class="single-offers">
+                                    <img src="{{ asset('assets/img/gallery/offers2.png') }}" alt=""
+                                        class=" w-100">
+                                    <div class="offers-caption text-center" style="padding: 0 120px;">
+                                        <div class="cat-icon">
+                                            <img src="{{ asset('assets/img/icon/offers-icon1.png') }}" alt="">
+                                        </div>
+                                        <div class="cat-cap">
+                                            <h5><a href="#" role="button">{{ $layanan->nama }}</a></h5>
+                                            <p>{{ $layanan->deskripsi }}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="cat-cap">
-                                <h5><a href="services.html">Cloth ironing</a></h5>
-                                <p>The automated process starts as soon as your clothes go into the machine. The outcome is
-                                    gleaming clothes!!</p>
+                            <div class="col-lg-6 col-md-6">
+                                <div class="single-offers">
+                                    <img src="{{ asset('assets/img/gallery/offers4.png') }}" alt=""
+                                        class=" w-100">
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="single-offers">
-                        <img src="assets/img/gallery/offers4.png" alt="" class=" w-100">
-                    </div>
-                </div>
+                        @endif
+                    @endif
+                @empty
+                    <p class="text-center">Belum ada layanan tersedia</p>
+                @endforelse
             </div>
         </div>
     </section>
@@ -136,7 +226,8 @@
                         </div>
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-5">
-                        <a href="#" class="btn wantToWork-btn"><img src="assets/img/icon/call2.png" alt="">
+                        <a href="#" class="btn wantToWork-btn"><img src="assets/img/icon/call2.png"
+                                alt="">
                             Learn More</a>
                     </div>
                 </div>
@@ -145,66 +236,38 @@
     </section>
     <!-- Want To work End -->
     <!--? Testimonials_start -->
-    <section class="testimonials-area testimonials-overly  position-relative">
+    <section class="testimonials-area testimonials-overly position-relative">
         <div class="container">
-            <div class="border-bottom section-padding40 ">
+            <div class="border-bottom section-padding40">
                 <div class="row">
                     <div class="col-xl-12 ">
                         <!-- testmonial-image -->
                         <div class="testmonial-nav text-center">
-                            <div class="testmonial-thumb">
-                                <img src="assets/img/gallery/testimonila1.png" alt="">
-                            </div>
-                            <div class="testmonial-thumb">
-                                <img src="assets/img/gallery/testimonila2.png" alt="">
-                            </div>
-                            <div class="testmonial-thumb">
-                                <img src="assets/img/gallery/testimonila3.png" alt="">
-                            </div>
-                            <div class="testmonial-thumb">
-                                <img src="assets/img/gallery/testimonila2.png" alt="">
-                            </div>
+                            @foreach ($reviews as $key => $review)
+                                <div class="testmonial-thumb">
+                                    <span class="genric-btn primary">{{ $key + 1 }}</span>
+                                </div>
+                            @endforeach
                         </div>
                         <div class="testmonial-item-active text-center">
-                            <!-- testimonial-single-items -->
-                            <div class="testmonial-item ">
-                                <p class="pera">The automated process starts as soon as your clothes go into the<br>
-                                    machine. The outcome is gleaming clothes!</p>
-                                <div class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
+                            @forelse ($reviews as $review)
+                                <!-- testimonial-single-items -->
+                                <div class="testmonial-item ">
+                                    <p class="pera px-5">{{ $review->review }}</p>
+                                    {{-- <div class="rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div> --}}
+                                    <p> - {{ $review->user->nama }}</p>
                                 </div>
-                                <p> - Rupaya</p>
-                            </div>
-                            <!-- testimonial-single-items -->
-                            <div class="testmonial-item ">
-                                <p class="pera">The automated process starts as soon as your clothes go into the<br>
-                                    machine. The outcome is gleaming clothes!</p>
-                                <div class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
+                            @empty
+                                <div class="testimonial-item ">
+                                    <p class="pera">Belum ada review tersedia</p>
                                 </div>
-                                <p> - Rupaya</p>
-                            </div>
-                            <!-- testimonial-single-items -->
-                            <div class="testmonial-item ">
-                                <p class="pera">The automated process starts as soon as your clothes go into the<br>
-                                    machine. The outcome is gleaming clothes!</p>
-                                <div class="rating">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <p> - Rupaya</p>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -212,10 +275,4 @@
         </div>
     </section>
     <!-- Testimonials_end -->
-
-    <!--?  Map Area start  -->
-    <div class="Map-area">
-        <img src="assets/img/gallery/Map.png" alt="" class="w-100">
-    </div>
-    <!-- Map Area End -->
 @endsection

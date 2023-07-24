@@ -38,7 +38,7 @@
                     <tbody>
                         @forelse ($list_pesanan as $pesanan)
                             <tr class="table-row">
-                                <td>{{ $pesanan->user->nama }}</td>
+                                <td>{{ $pesanan->nama_pelanggan ?? $pesanan->user->nama }}</td>
                                 <td>{{ $pesanan->layanan->nama }}</td>
                                 <td>{{ $pesanan->jumlah }}</td>
                                 <td>Rp{{ $pesanan->total_biaya }}</td>
@@ -145,11 +145,11 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="genric-btn btn-secondary border-0"
-                            data-dismiss="modal">Batal</button>
+                            data-dismiss="modal">Tidak</button>
                         <form action="{{ route('kasir.pesanan.cancel', $pesanan->transaksi->id) }}" method="post">
                             @csrf
                             @method('put')
-                            <button type="submit" class="genric-btn danger">Batalkan Pesanan</button>
+                            <button type="submit" class="genric-btn danger">Ya, Batalkan Pesanan</button>
                         </form>
                     </div>
                 </div>

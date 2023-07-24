@@ -1,12 +1,40 @@
 @extends('layouts.fullscreen')
 
+@push('add-css')
+    <style>
+        .custom {
+            border: 1px solid #6884fc;
+            background-color: white;
+            color: #6884fc;
+        }
+    </style>
+@endpush
+
 @section('contents')
-    <div style="min-height: 80vh;" class="d-flex align-items-center justify-content-center">
-        <div class="d-flex justify-content-center align-items-center flex-wrap" style="gap: 1rem;">
-            <a href="{{ route('admin.users.index') }}" class="p-5 bg-primary rounded">Kelola Users</a>
-            <a href="{{ route('admin.layanan.index') }}" class="p-5 bg-primary rounded">Kelola Layanan</a>
-            <a href="{{ route('admin.reviews.index') }}" class="p-5 bg-primary rounded">Kelola Reviews</a>
-            <a href="{{ route('admin.laporan.index') }}" class="p-5 bg-primary rounded">Kelola Laporan</a>
+    <div style="min-height: 80vh;" class="d-flex flex-column align-items-center justify-content-center">
+        <div class="row justify-content-center mb-5">
+            <div class="col-6 col-md-5">
+                <a href="{{ route('admin.users.index') }}"
+                    class="custom rounded-circle text-center d-flex align-items-center justify-content-center w-100 p-3"
+                    style="aspect-ratio: 1/1">Kelola Users</a>
+            </div>
+            <div class="col-6 col-md-5">
+                <a href="{{ route('admin.layanan.index') }}"
+                    class="custom rounded-circle text-center d-flex align-items-center justify-content-center w-100 p-3"
+                    style="aspect-ratio: 1/1">Kelola Layanan</a>
+            </div>
+        </div>
+        <div class="row justify-content-center" style="row-gap: 2rem">
+            <div class="col-6 col-md-5">
+                <a href="{{ route('admin.reviews.index') }}"
+                    class="custom rounded-circle text-center d-flex align-items-center justify-content-center w-100 p-3"
+                    style="aspect-ratio: 1/1">Kelola Reviews</a>
+            </div>
+            <div class="col-6 col-md-5">
+                <a href="{{ route('admin.laporan.index') }}"
+                    class="custom rounded-circle text-center d-flex align-items-center justify-content-center w-100 p-3"
+                    style="aspect-ratio: 1/1">Kelola Laporan</a>
+            </div>
         </div>
     </div>
 @endsection

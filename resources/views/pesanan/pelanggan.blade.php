@@ -73,15 +73,16 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        Apakah Anda benar ingin menghapus data pesanan {{ $pesanan->nama }}</span>?
+                        Apakah Anda benar ingin membatalkan pesanan {{ $pesanan->layanan->nama }} :
+                        {{ $pesanan->jadwal_pengambilan }} - {{ $pesanan->jadwal_pengantaran }}?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="genric-btn btn-secondary border-0" data-dismiss="modal">Batal</button>
-                        {{-- <form action="{{ route('admin.pesanan.destroy', $pesanan->id) }}" method="post">
+                        <button type="button" class="genric-btn btn-secondary border-0" data-dismiss="modal">Tidak</button>
+                        <form action="{{ route('pelanggan.pesanan.cancel', $pesanan->transaksi->id) }}" method="post">
                             @csrf
-                            @method('delete')
-                            <button type="submit" class="genric-btn danger">Hapus</button>
-                        </form> --}}
+                            @method('put')
+                            <button type="submit" class="genric-btn danger">Ya, Batalkan Pesanan</button>
+                        </form>
                     </div>
                 </div>
             </div>

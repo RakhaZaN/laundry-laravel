@@ -1,4 +1,4 @@
-<header>
+<header style="background-color: #ecf4fc">
     <!-- Header Start -->
     <div class="header-area">
         <div class="main-header header-sticky">
@@ -21,16 +21,6 @@
                                     </li>
                                     <li class="{{ Request::is('services') ? 'active' : '' }}">
                                         <a href="{{ url('/services') }}">Services</a>
-                                    </li>
-                                    <li class="{{ Request::is('blog*') ? 'active' : '' }}">
-                                        <a href="{{ url('/blog') }}">Blog</a>
-                                        <ul class="submenu">
-                                            <li><a href="{{ url('/blog') }}">Blog</a></li>
-                                            <li><a href="{{ url('/blog/detail') }}">Blog Details</a></li>
-                                        </ul>
-                                    </li>
-                                    <li class="{{ Request::is('contact') ? 'active' : '' }}">
-                                        <a href="{{ url('/contact') }}">Contact</a>
                                     </li>
                                     <li class="{{ Request::is('auth/login') ? 'active' : '' }} mt-10 d-lg-none">
                                         <a href="{{ route('auth.login') }}"
@@ -61,7 +51,7 @@
                                         @break
 
                                         @case('kasir')
-                                            <li class="{{ Request::is('kasir/pesanan') ? 'active' : '' }}">
+                                            <li class="{{ Request::is('kasir') ? 'active' : '' }}">
                                                 <a href="{{ route('kasir.menu') }}">Dashboard</a>
                                             </li>
                                             <li class="{{ Request::is('kasir/pesanan/create') ? 'active' : '' }}">

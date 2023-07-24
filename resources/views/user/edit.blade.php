@@ -3,6 +3,14 @@
 @section('contents')
     <h1 class="display-4 font-weight-bold mb-20">Ubah User</h1>
 
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ $errors->first() }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
     <div class="card">
         <form action="{{ route('admin.users.update', $user->id) }}" method="post">
             @csrf
@@ -29,7 +37,7 @@
                         <div class="form-group">
                             <label for="email">Email</label>
                             <input type="email" name="email" id="email" class="single-input"
-                                placeholder="Masukkan Email Anda" value="{{ old('email') ?? $user->email }}">
+                                placeholder="Masukkan Email Anda" value="{{ old('email') ?? $user->email }}" readonly>
                         </div>
                     </div>
                     <div class="col-12 col-md-6">

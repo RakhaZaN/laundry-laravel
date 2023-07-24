@@ -15,7 +15,16 @@
                 <h3 class="mb-30 font-weight-bold">Form Pesanan</h3>
                 <div class="row" style="row-gap: 1rem">
                     <div class="col-12 col-md-6">
+                        @php
+                            $nama_pelanggan = auth()->user()->peran == 'pelanggan' ? auth()->user()->nama : '';
+                        @endphp
                         <div class="d-flex flex-column" style="gap: 1rem">
+                            <div class="form-group mb-10">
+                                <label for="nama_pelanggan">Nama Pelanggan</label>
+                                <input type="text" name="nama_pelanggan" id="nama_pelanggan" class="single-input"
+                                    value="{{ old('nama_pelanggan') ?? $nama_pelanggan }}"
+                                    {{ auth()->user()->peran == 'pelanggan' ? 'readonly' : '' }}>
+                            </div>
                             <div class="form-group mb-10">
                                 <label for="jadwal_pengambilan">Jadwal Pengambilan</label>
                                 <input type="datetime-local" name="jadwal_pengambilan" id="jadwal_pengambilan"

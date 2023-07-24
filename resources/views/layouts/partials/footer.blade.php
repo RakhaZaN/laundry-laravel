@@ -1,6 +1,6 @@
 <footer>
     <!-- Footer Start-->
-    <div class="footer-area footer-padding">
+    <div class="footer-area footer-padding mt-30">
         <div class="container">
             <div class="row d-flex justify-content-between">
                 <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
@@ -8,7 +8,8 @@
                         <div class="single-footer-caption mb-30">
                             <!-- logo -->
                             <div class="footer-logo mb-35">
-                                <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""></a>
+                                <a href="#"><img src="{{ asset('assets/img/logo/logo2_footer.png') }}"
+                                        alt=""></a>
                             </div>
                             <div class="footer-tittle">
                                 <div class="footer-pera">
@@ -55,7 +56,7 @@
         </div>
     </div>
     <!-- footer-bottom area -->
-    <div class="footer-bottom-area section-bg2" data-background="assets/img/gallery/footer-bg.png">
+    <div class="footer-bottom-area section-bg2" data-background="{{ asset('assets/img/gallery/footer-bg.png') }}">
         <div class="container">
             <div class="footer-border">
                 <div class="row d-flex align-items-center">
