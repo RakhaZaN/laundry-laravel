@@ -25,14 +25,15 @@
                 <table class="table table-stipped">
                     <thead>
                         <tr class="table-head">
-                            <td scope="col">Nama Pelanggan</td>
-                            <td scope="col">Layanan</td>
-                            <td scope="col">Jumlah</td>
-                            <td scope="col">Total</td>
-                            <td scope="col">Jadwal Pengambilan</td>
-                            <td scope="col">Jadwal Pengantaran</td>
-                            <td scope="col">Status</td>
-                            <td scope="col" width="200px" class="text-center">Aksi</td>
+                            <td scope="col" class="align-middle">Nama Pelanggan</td>
+                            <td scope="col" class="align-middle">Layanan</td>
+                            <td scope="col" class="align-middle">Jumlah</td>
+                            <td scope="col" class="align-middle">Total</td>
+                            <td scope="col" class="align-middle">Jadwal Pengambilan</td>
+                            <td scope="col" class="align-middle">Jadwal Pengantaran</td>
+                            <td scope="col" class="align-middle">Status Pesanan</td>
+                            <td scope="col" class="align-middle">Status Pembayaran</td>
+                            <td scope="col" width="200px" class="text-center align-middle">Aksi</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,9 +42,10 @@
                                 <td>{{ $pesanan->nama_pelanggan ?? $pesanan->user->nama }}</td>
                                 <td>{{ $pesanan->layanan->nama }}</td>
                                 <td>{{ $pesanan->jumlah }}</td>
-                                <td>Rp{{ $pesanan->total_biaya }}</td>
+                                <td>Rp{{ number_format($pesanan->total_biaya) }}</td>
                                 <td>{{ $pesanan->jadwal_pengambilan }}</td>
                                 <td>{{ $pesanan->jadwal_pengantaran }}</td>
+                                <td>{{ $pesanan->status }}</td>
                                 <td>
                                     {{ $pesanan->transaksi->status }}
                                     @if ($pesanan->transaksi->status == 'pending')
@@ -54,11 +56,23 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    @if (!in_array($pesanan->transaksi->status, ['dibayar', 'dibatalkan']))
-                                        <a href="#" class="genric-btn danger small" role="button" data-toggle="modal"
-                                            data-target="#deleteConfirmModal-{{ $pesanan->id }}">
-                                            <i class="fas fa-times"></i>
+                                    @if (!in_array($pesanan->status, ['selesai', 'dibatalkan']))
+                                        <a href="#" class="genric-btn info small" role="button" data-toggle="modal"
+                                            data-target="#updateStatusModal-{{ $pesanan->id }}">
+                                            <i class="fas fa-tasks"></i>
                                         </a>
+                                    @endif
+                                    @if (!in_array($pesanan->status, ['diantar', 'selesai', 'dibatalkan']))
+                                        <a href="{{ route('kasir.pesanan.edit', $pesanan->id) }}"
+                                            class="genric-btn small warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        @if (!in_array($pesanan->transaksi->status, ['dibayar', 'dibatalkan']))
+                                            <a href="#" class="genric-btn danger small" role="button"
+                                                data-toggle="modal" data-target="#deleteConfirmModal-{{ $pesanan->id }}">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>
@@ -128,6 +142,53 @@
         </div>
     </div>
 
+    <!-- Modal Update Status Pesanan -->
+    @foreach ($list_pesanan as $pesanan)
+        <div class="modal fade" id="updateStatusModal-{{ $pesanan->id }}" tabindex="-1"
+            aria-labelledby="updateStatusModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form action="{{ route('kasir.pesanan.status', $pesanan->id) }}" method="post">
+                    @csrf
+                    @method('put')
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="updateStatusModalLabel">Update Status</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <label for="status" class="col-12 col-md-4">Status</label>
+                                <div class="col-12 col-md-8">
+                                    @php
+                                        $status = ['menunggu penjemputan', 'dijemput', 'diproses', 'diantar'];
+                                    @endphp
+                                    <select name="status" id="status" class="form-select">
+                                        <option @selected($pesanan->status == 'menunggu penjemputan') @disabled(in_array($pesanan->status, $status))>Menunggu
+                                            Penjemputan</option>
+                                        <option value="dijemput" @selected($pesanan->status == 'dijemput') @disabled(in_array($pesanan->status, array_slice($status, 1)))>
+                                            Dijemput</option>
+                                        <option value="diproses" @selected($pesanan->status == 'diproses') @disabled(in_array($pesanan->status, array_slice($status, 2)))>
+                                            Diproses</option>
+                                        <option value="diantar" @selected($pesanan->status == 'diantar') @disabled(in_array($pesanan->status, array_slice($status, 3)))>
+                                            Diantar</option>
+                                        <option value="selesai" @selected($pesanan->status == 'selesai')>Selesai</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="genric-btn btn-secondary border-0"
+                                data-dismiss="modal">Tidak</button>
+                            <button type="submit" class="genric-btn primary">Perbarui Status</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endforeach
+
     <!-- Modal Delete -->
     @foreach ($list_pesanan as $pesanan)
         <div class="modal fade" id="deleteConfirmModal-{{ $pesanan->id }}" tabindex="-1"
@@ -146,7 +207,7 @@
                     <div class="modal-footer">
                         <button type="button" class="genric-btn btn-secondary border-0"
                             data-dismiss="modal">Tidak</button>
-                        <form action="{{ route('kasir.pesanan.cancel', $pesanan->transaksi->id) }}" method="post">
+                        <form action="{{ route('kasir.pesanan.cancel', $pesanan->id) }}" method="post">
                             @csrf
                             @method('put')
                             <button type="submit" class="genric-btn danger">Ya, Batalkan Pesanan</button>

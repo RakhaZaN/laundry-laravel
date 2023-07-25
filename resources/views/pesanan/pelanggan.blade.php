@@ -14,14 +14,15 @@
                 <table class="table table-stipped">
                     <thead>
                         <tr class="table-head">
-                            <td scope="col">Layanan</td>
-                            <td scope="col">Jumlah</td>
-                            <td scope="col">Harga</td>
-                            <td scope="col">Total</td>
-                            <td scope="col">Jadwal Pengambilan</td>
-                            <td scope="col">Jadwal Pengantaran</td>
-                            <td scope="col">Status</td>
-                            <td scope="col" width="200px" class="text-center">Aksi</td>
+                            <td scope="col" class="align-middle">Layanan</td>
+                            <td scope="col" class="align-middle">Jumlah</td>
+                            <td scope="col" class="align-middle">Harga</td>
+                            <td scope="col" class="align-middle">Total</td>
+                            <td scope="col" class="align-middle">Jadwal Pengambilan</td>
+                            <td scope="col" class="align-middle">Jadwal Pengantaran</td>
+                            <td scope="col" class="align-middle">Status Pesanan</td>
+                            <td scope="col" class="align-middle">Status Pembayaran</td>
+                            <td scope="col" class="text-center align-middle" width="200px" class="text-center">Aksi</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,21 +30,28 @@
                             <tr class="table-row">
                                 <td>{{ $pesanan->layanan->nama }}</td>
                                 <td>{{ $pesanan->jumlah }}</td>
-                                <td>Rp{{ $pesanan->harga }}</td>
-                                <td>{{ $pesanan->total_biaya }}</td>
+                                <td>Rp{{ number_format($pesanan->harga) }}</td>
+                                <td>Rp{{ number_format($pesanan->total_biaya) }}</td>
                                 <td>{{ $pesanan->jadwal_pengambilan }}</td>
                                 <td>{{ $pesanan->jadwal_pengantaran }}</td>
+                                <td>{{ $pesanan->status }}</td>
                                 <td>{{ $pesanan->transaksi->status }}</td>
                                 <td class="text-center">
-                                    @if ($pesanan->transaksi->status == 'belum bayar')
-                                        <a href="{{ route('pelanggan.pembayaran', $pesanan->transaksi->id) }}"
-                                            class="genric-btn small info"><i class="fas fa-shopping-bag"></i></a>
+                                    @if ($pesanan->transaksi->status == 'belum bayar' && $pesanan->transaksi->metode_pembayaran != 'tunai')
+                                        @if (in_array($pesanan->status, ['dijemput', 'diproses', 'diantar']))
+                                            <a href="{{ route('pelanggan.pembayaran', $pesanan->transaksi->id) }}"
+                                                class="genric-btn small info"><i class="fas fa-money-bill-alt"></i></a>
+                                        @endif
+                                    @endif
+                                    @if (!in_array($pesanan->status, ['diantar', 'selesai', 'dibatalkan']))
                                         <a href="{{ route('pelanggan.pesanan.edit', $pesanan->id) }}"
                                             class="genric-btn small warning"><i class="fas fa-edit"></i></a>
-                                        <a href="#" class="genric-btn danger small" role="button" data-toggle="modal"
-                                            data-target="#deleteConfirmModal-{{ $pesanan->id }}">
-                                            <i class="fas fa-times"></i>
-                                        </a>
+                                        @if ($pesanan->status != 'diproses' && !in_array($pesanan->transaksi->status, ['dibayar', 'dibatalkan']))
+                                            <a href="#" class="genric-btn danger small" role="button"
+                                                data-toggle="modal" data-target="#deleteConfirmModal-{{ $pesanan->id }}">
+                                                <i class="fas fa-times"></i>
+                                            </a>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>
@@ -78,7 +86,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="genric-btn btn-secondary border-0" data-dismiss="modal">Tidak</button>
-                        <form action="{{ route('pelanggan.pesanan.cancel', $pesanan->transaksi->id) }}" method="post">
+                        <form action="{{ route('pelanggan.pesanan.cancel', $pesanan->id) }}" method="post">
                             @csrf
                             @method('put')
                             <button type="submit" class="genric-btn danger">Ya, Batalkan Pesanan</button>

@@ -8,20 +8,24 @@
     @endif
 
     <div class="card">
-        <form action="{{ route('pelanggan.pesanan.update', $pesanan->id) }}" method="POST">
+        <form action="{{ route(auth()->user()->peran . '.pesanan.update', $pesanan->id) }}" method="POST">
             @csrf
             @method('put')
             <input type="hidden" name="layanan_id" value="{{ $pesanan->layanan->id }}">
             <div class="card-body">
-                <h3 class="mb-30 font-weight-bold">Form Pesanan</h3>
+                <div class="d-flex align-items-center mb-30 " style="gap: 1rem">
+                    <h3 class="font-weight-bold">Form Pesanan</h3> -
+                    <p style="margin: 0 0 5px">Layanan ({{ $pesanan->layanan->kategori }}):
+                        <b>{{ $pesanan->layanan->nama }}</b>
+                    </p>
+                </div>
                 <div class="row" style="row-gap: 1rem">
                     <div class="col-12 col-md-6">
                         <div class="d-flex flex-column" style="gap: 1rem">
                             <div class="form-group mb-10">
                                 <label for="nama_pelanggan">Nama Pelanggan</label>
                                 <input type="text" name="nama_pelanggan" id="nama_pelanggan" class="single-input"
-                                    value="{{ old('nama_pelanggan') ?? $pesanan->nama_pelanggan }}"
-                                    {{ auth()->user()->peran == 'pelanggan' ? 'readonly' : '' }}>
+                                    value="{{ old('nama_pelanggan') ?? $pesanan->nama_pelanggan }}" readonly>
                             </div>
                             <div class="form-group mb-10">
                                 <label for="jadwal_pengambilan">Jadwal Pengambilan</label>
@@ -37,8 +41,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="alamat">Alamat</label>
-                                <input type="textl" name="alamat" id="alamat" class="single-input"
-                                    value="{{ old('alamat') ?? ($pesanan->alamat ?? auth()->user()->alamat) }}">
+                                <input type="text" name="alamat" id="alamat" class="single-input"
+                                    value="{{ old('alamat') ?? $pesanan->alamat }}" @readonly(auth()->user()->peran == 'kasir')>
                             </div>
                         </div>
                     </div>
@@ -65,12 +69,12 @@
                                 <label for="">Metode Pembayaran</label><br>
                                 <div class="form-check form-check-inline">
                                     <input type="radio" class="form-check-input" name="metode_pembayaran" id="tunai"
-                                        value="tunai" @checked($pesanan->transaksi->metode_pembayaran == 'tunai')>
+                                        value="tunai" @disabled(auth()->user()->peran == 'kasir' && $pesanan->transaksi->metode_pembayaran != 'tunai') @checked($pesanan->transaksi->metode_pembayaran == 'tunai')>
                                     <label for="tunai" class="form-check-label">Tunai</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input type="radio" class="form-check-input" name="metode_pembayaran" id="non-tunai"
-                                        value="non-tunai" @checked($pesanan->transaksi->metode_pembayaran != 'tunai')>
+                                        value="non-tunai" @disabled(auth()->user()->peran == 'kasir' && $pesanan->transaksi->metode_pembayaran == 'tunai') @checked($pesanan->transaksi->metode_pembayaran != 'tunai')>
                                     <label for="non-tunai" class="form-check-label">Non-Tunai</label>
                                 </div>
                             </div>
@@ -100,7 +104,7 @@
         const kalkulasi = () => {
             const harga = $('#harga').val()
             const totalBiaya = harga * jumlah.val()
-            $('#total-display').text(totalBiaya)
+            $('#total-display').text(totalBiaya.toLocaleString('id-ID'))
             $('#total').val(totalBiaya)
         }
     </script>

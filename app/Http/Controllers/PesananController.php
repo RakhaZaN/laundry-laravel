@@ -45,9 +45,12 @@ class PesananController extends Controller
             'jadwal_pengambilan' => 'required',
             'jadwal_pengantaran' => 'required',
             'alamat' => 'required|string',
-            'jumlah' => 'required',
+            'jumlah' => 'nullable|decimal:0,2',
             'harga' => 'required|integer',
-            'total_biaya' => 'required|integer',
+            'total_biaya' => 'nullable|integer',
+        ], [
+            'required' => ':attribute tidak boleh kosong',
+            'layanan_id.exists' => 'layanan tidak ditemukan',
         ]);
         $validated['user_id'] = $request->user_id ?? auth()->user()->id;
 
@@ -57,17 +60,13 @@ class PesananController extends Controller
             Transaksi::create([
                 'pesanan_id' => $create->id,
                 'metode_pembayaran' => $request->metode_pembayaran,
-                'status' => $request->metode_pembayaran == 'tunai' ? 'pending' : 'belum bayar',
+                'status' => $request->meode_pembayaran == 'tunai' ? 'pending' : 'belum bayar',
             ]);
 
             if (auth()->user()->peran == 'kasir') {
-                return redirect(route('kasir.pesanan.index'))->with('success', 'Berhasil membuat pesanan');
+                return redirect(route('kasir.menu'))->with('success', 'Berhasil membuat pesanan');
             } else if (auth()->user()->peran == 'pelanggan') {
-                if ($request->metode_pembayaran == 'tunai') {
-                    return redirect(route('pelanggan.menu'))->with('success', 'Berhasil membuat pesanan');
-                } else {
-                    return redirect(route('pelanggan.pembayaran', ['pesanan' => $create->id]))->with('success', 'Berhasil membuat pesanan. Silahkan melakukan pembayaran');
-                }
+                return redirect(route('pelanggan.my'))->with('success', 'Berhasil membuat pesanan');
             }
         }
 
@@ -101,20 +100,26 @@ class PesananController extends Controller
             'jadwal_pengambilan' => 'required',
             'jadwal_pengantaran' => 'required',
             'alamat' => 'required|string',
-            'jumlah' => 'required',
+            'jumlah' => 'required|decimal:0,2',
             'harga' => 'required|integer',
             'total_biaya' => 'required|integer',
+        ], [
+            'required' => ':attribute tidak boleh kosong',
+            'layanan_id.exists' => 'layanan tidak ditemukan',
         ]);
 
         if ($pesanan->update($validated)) {
             if ($request->metode_pembayaran != $pesanan->transaksi->metode_pembayaran) {
                 Transaksi::find($pesanan->transaksi->id)->update([
                     'metode_pembayaran' => $request->metode_pembayaran,
-                    'status' => $request->metode_pembayaran != 'tunai' ? 'pending' : 'belum bayar',
+                    'status' => $request->meode_pembayaran == 'tunai' ? 'pending' : 'belum bayar',
                 ]);
             }
-            if ($request->metode_pembayaran == 'tunai') return redirect(route('pelanggan.my'))->with('success', 'Berhasil mengubah data pesanan');
-            else return redirect(route('pelanggan.pembayaran', $pesanan->id))->with('success', 'Berhasil mengubah metode pembayaran menjadi Non-Tunai. Silahkan lanjutkan tahap pembayaran');
+            if (auth()->user()->peran == 'kasir') {
+                return redirect(route('kasir.menu'))->with('success', 'Berhasil mengubah data pesanan');
+            } else if (auth()->user()->peran == 'pelanggan') {
+                return redirect(route('pelanggan.my'))->with('success', 'Berhasil mengubah data pesanan');
+            }
         }
         return back()->with('error', 'Gagal mengubah data pesanan. Terjadi kesalahan, coba lagi dalam beberapa menit')->withInput();
     }
@@ -125,7 +130,7 @@ class PesananController extends Controller
     public function destroy(Pesanan $pesanan): RedirectResponse
     {
         if ($pesanan->delete()) {
-            return redirect(route('kasir.pesanan.index'))->with('success', 'Berhasil menghapus data pesanan');
+            return redirect(route('kasir.menu'))->with('success', 'Berhasil menghapus data pesanan');
         }
         return back()->with('error', 'Gagal menghapus data pesanan. Terjadi kesalahan, coba lagi dalam beberapa menit');
     }
@@ -150,7 +155,7 @@ class PesananController extends Controller
         }
 
         if ($transaksi->update($validated)) {
-            return redirect(route('pelanggan.menu'))->with('success', 'Berhasil melakukan pembayaran, silahkan tunggu kami mengambil cucian Anda sesuai jadwal');
+            return redirect(route('pelanggan.my'))->with('success', 'Berhasil melakukan pembayaran, silahkan tunggu kami mengambil cucian Anda sesuai jadwal');
         }
 
         return back()->with('error', 'Gagal mengunggah bukti. Terjadi kesalahan, coba lagi dalam beberapa menit');
@@ -159,16 +164,26 @@ class PesananController extends Controller
     public function approveTransaksi(Transaksi $transaksi): RedirectResponse
     {
         if ($transaksi->update(['status' => 'dibayar'])) {
-            return redirect(route('kasir.pesanan.index'))->with('success', 'Berhasil menyetujui pembayaran');
+            return redirect(route('kasir.menu'))->with('success', 'Berhasil menyetujui pembayaran');
         }
         return back()->with('error', 'Gagal menyetujui pembayaran. Terjadi kesalahan, coba lagi dalam beberapa menit');
     }
 
-    public function cancelPesanan(Transaksi $transaksi): RedirectResponse
+    public function cancelPesanan(Pesanan $pesanan): RedirectResponse
     {
-        if ($transaksi->update(['status' => 'dibatalkan'])) {
-            return redirect(route('kasir.pesanan.index'))->with('success', 'Berhasil membatalkan pesanan');
+        $transaksi = Transaksi::find($pesanan->transaksi->id);
+        if ($pesanan->update(['status' => 'dibatalkan'])) {
+            $transaksi->update(['status' => 'dibatalkan']);
+            return redirect(route('kasir.menu'))->with('success', 'Berhasil membatalkan pesanan');
         }
         return back()->with('error', 'Gagal membatalkan pesanan. Terjadi kesalahan, coba lagi dalam beberapa menit');
+    }
+
+    public function statusPesanan(Request $request, Pesanan $pesanan): RedirectResponse
+    {
+        if ($pesanan->update(['status' => $request->status])) {
+            return redirect(route('kasir.menu'))->with('success', 'Berhasil mengubah status pesanan');
+        }
+        return back()->with('error', 'Gagal mengubah status pesanan. Terjadi kesalahan, coba lagi dalam beberapa menit');
     }
 }

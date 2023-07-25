@@ -12,7 +12,10 @@
             @csrf
             <input type="hidden" name="layanan_id" value="{{ $layanan->id }}">
             <div class="card-body">
-                <h3 class="mb-30 font-weight-bold">Form Pesanan</h3>
+                <div class="d-flex align-items-center mb-30 " style="gap: 1rem">
+                    <h3 class="font-weight-bold">Form Pesanan</h3> -
+                    <p style="margin: 0 0 5px">Layanan ({{ $layanan->kategori }}): <b>{{ $layanan->nama }}</b></p>
+                </div>
                 <div class="row" style="row-gap: 1rem">
                     <div class="col-12 col-md-6">
                         @php
@@ -54,13 +57,15 @@
                                         class="single-input" value="{{ $layanan->harga }}" readonly>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="jumlah">
-                                    Jumlah {{ $layanan->kategori == 'kiloan' ? '(Kg)' : '' }}
-                                </label>
-                                <input type="number" name="jumlah" id="jumlah" placeholder="Masukkan jumlah"
-                                    class="single-input" value="{{ old('jumlah') ?? '1.0' }}">
-                            </div>
+                            @if (Auth::user()->peran == 'kasir')
+                                <div class="form-group">
+                                    <label for="jumlah">
+                                        Jumlah {{ $layanan->kategori == 'kiloan' ? '(Kg)' : '' }}
+                                    </label>
+                                    <input type="number" name="jumlah" id="jumlah" placeholder="Masukkan jumlah"
+                                        class="single-input" value="{{ old('jumlah') ?? '0' }}">
+                                </div>
+                            @endif
                             <div class="form-group">
                                 <label for="">Metode Pembayaran</label><br>
                                 <div class="form-check form-check-inline">
@@ -78,10 +83,12 @@
                     </div>
                 </div>
                 <div class="d-flex flex-column align-items-end mt-10">
-                    <input type="hidden" name="total_biaya" id="total">
-                    <h4 class="font-weight-bold text-primary h1 text-right mb-30">
-                        Rp<span id="total-display">0</span>
-                    </h4>
+                    @if (Auth::user()->peran == 'kasir')
+                        <input type="hidden" name="total_biaya" id="total">
+                        <h4 class="font-weight-bold text-primary h1 text-right mb-30">
+                            Rp<span id="total-display">0</span>
+                        </h4>
+                    @endif
                     <button type="submit" class="genric-btn primary">Buat Pesanan</button>
                 </div>
             </div>
